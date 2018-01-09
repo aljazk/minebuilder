@@ -1,0 +1,32 @@
+
+div#canvas_div{
+	background-color: transparent;
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:700;
+	height:600;
+	overflow:hidden;
+}
+
+div.movable{
+	overflow:hidden;
+	opacity: 0;
+}
+
+div.movable>p{
+	margin: 0px;
+}
+
+div.movable:hover{
+	overflow:visible;
+	opacity: 1;
+}
+
+div.tunnel_display:hover{
+	white-space: nowrap;
+}
+
+div.tunnel_display:hover.left{	
+    text-align: right;
+}

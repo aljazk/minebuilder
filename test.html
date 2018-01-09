@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script>
+    var value = 1;
+	var reps = 100;
+    var ore = {diamond: 0, gold: 0, iron: 0, stone: 0, dirt: 0};
+	
+	var magic = 1.2;
+	console.log(value*0.2 <= 1)
+    for(var i=0; i<reps; i++){
+		var dirt = value;
+		var diamond = Math.round( (Math.random() * 0.01) * (dirt+0.1)  );
+		if(dirt * 0.01 <= 0.5){
+			if (Math.random() < Math.pow(0.03,magic))
+				var diamond = 1;
+		}
+		dirt -= diamond;
+		ore.diamond += diamond;
+		var gold = Math.round( (Math.random() * 0.05) * (dirt+0.1)  );
+		if(dirt * 0.05 <= 0.5){
+			if (Math.random() < Math.pow(0.05,magic))
+				var gold = 1;
+		}
+		dirt -= gold;
+		ore.gold += gold;
+		var iron = Math.round( (Math.random() * 0.10) * (dirt+0.1)  );
+		if(dirt * 0.1 <= 0.5){
+			if (Math.random() < Math.pow(0.1,magic))
+				iron = 1;
+		}
+		dirt -= iron;
+		ore.iron += iron;
+		var stone = Math.round( ((Math.random() * 0.20)+0.30) * (dirt+0.1) );
+		if(dirt * 0.2 <= 0.5){
+			if (Math.random() < Math.pow(0.5,magic))
+				var stone = 1;
+			else
+				stone = 0;
+		}
+		dirt -= stone;
+		ore.stone += stone;
+		ore.dirt += dirt;
+    }
+	
+    value *= reps;
+    var ore2 = {diamond: 0, gold: 0, iron: 0, stone: 0, dirt: 0};
+	
+	var dirt = value;
+	var diamond = Math.floor( (Math.random() * 0.03) * value );
+	dirt -= diamond;
+	ore2.diamond += diamond;
+	var gold = Math.floor( (Math.random() * 0.07) * value );
+	dirt -= gold;
+	ore2.gold += gold;
+	var iron = Math.floor( (Math.random() * 0.10) * value );
+	dirt -= iron;
+	ore2.iron += iron;
+	var stone = Math.floor( ((Math.random() * 0.20)+0.3) * value );
+	dirt -= stone;
+	ore2.stone += stone;
+	ore2.dirt += dirt;
+	
+	console.log(ore);
+	console.log(ore2);
+</script>
+
+</body>
+</html>
