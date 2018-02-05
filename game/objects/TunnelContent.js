@@ -28,7 +28,7 @@ class TunnelContent{
 	}
 	
 	makeOre(v){
-		return new StorageContent(v, this.ore).content;
+		return new StorageContent(v, this.ore);
 	}
 	
 }

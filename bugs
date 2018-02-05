@@ -1,1 +1,7 @@
 make tests for randomness
+display dont delete when exiting game
+cant move camera while paused
+upgrading could be done better
+elevator doesnt manage time correctly
+elevator disapears if we order miner to work when elevator is not on floor 0 - maybe was fixed
+redo work task with new intask force pushing

@@ -1,44 +1,86 @@
 class Drop extends Task{
-	constructor(miner, storage){
+	constructor(miner, ore){
 		var goal = 0;
 		var progress =  0;
+		var in_position = false;
 		var last_gen = 0;
+		var storage = null;
+		var display_error = true;
 		var funct = function(t){
-			if(progress == 0){
-				goal =  miner.sack.stored; //goal is to empty all the stored things
-			}
-			var drop = t * storage.drop_speed;
-			var leftover = miner.sack.take(drop);
-			if (leftover > 0){
-				drop = drop - leftover;
-			}
-			var over_top = storage.store(drop);
-			//drop the ore
-			progress += drop - over_top;
-			if(progress > goal-0.0001) progress = goal; //fix rounding error
-			if(progress >= last_gen + 1){
-				var p = Math.floor(progress) - last_gen;
-				last_gen = Math.floor(progress);
-				storage.ore.transfer(p, miner.sack.ore.content);
+			if(storage == null){
+				if (!in_position){
+					if (ore != null){ //if only dropping one ore also dont do anything if there is no ore of that type in sack
+						var oc = miner.sack.getOreCount(ore);
+						if (oc == 0 || oc == null){
+							return t;
+						}
+					}
+					if (miner.sack.empty()){ //if sack is empty dont do anything
+						return t;
+					}
+					if (miner.floor != 0){//first walk to floor 0
+						miner.goTo("Elevator", 0, "Walk to surface", "force");
+						return t;
+					}
+					//find the nearest empty storage
+					storage = miner.findBuilding("Empty Storage");
+					if (storage == null){
+						if (display_error){
+							console.log(miner.name+" "+miner.id+" cannot find empty storage!");
+							display_error = false;
+						}
+						return t;
+					} else {
+						display_error = true;
+					}
+					//walk to the storage that was found
+					miner.goTo(storage, null, "Walk to empty storage", "force");
+					in_position = true;
+					return t;
+				}
 			}
 			
-			if (over_top > 0){ //if storage was filled
-				miner.sack.fill(over_top); //return what you cannot store to sack
-				return over_top / storage.drop_speed + leftover / storage.drop_speed;
+			var drop = t * storage.getDropSpeed();
+			progress += drop;
+			var p = 0;
+			if(progress >= last_gen){
+				var floor_p = Math.floor(progress);
+				p = floor_p - last_gen;
+				last_gen = floor_p;
+				p = storage.content.transfer(p, miner.sack.content, ore);
+			}
+			
+			var diff = drop - p;
+			if (diff < 0){
+				return 0;
 			} else {
-				return leftover / storage.drop_speed;
+				return diff / storage.getDropSpeed();
 			}
-			
 		}
 		
 		var cond = function(){
-			if(storage.full() || miner.sack.stored == 0){
-				if (progress != goal){
-					console.log("Error in Drop.js, sack was not emptied: ", progress, last_gen, miner.sack.ore.getSum());
+			if (ore != null){ //if only dropping one ore type also return true if there is no ore of that type in sack
+				var oc = miner.sack.getOreCount(ore);
+				if (storage != null && storage.full() && oc > 0){
+					console.log("Still need to drop "+oc+" of "+ore);
+					miner.drop(ore);
+					return true;
+				}
+				if (oc == 0 || oc == null){
+					return true;
+				} else {
+					return false;
 				}
 			}
-			return storage.full() || miner.sack.stored == 0;
+			if (storage != null && storage.full() && !miner.sack.empty()){
+				console.log("Still need to drop:  "+miner.sack.sum());
+				miner.drop();
+				return true;
+			}
+			return miner.sack.empty();
 		}
-		super("Drop", "Drop things from sack to storage", funct, cond);
+		var msg = "Drop "+ore+" from sack to storage";
+		if (ore == null) msg = "Drop everything from sack to storage";
+		super("Drop", msg, funct, cond);
 	}
 }

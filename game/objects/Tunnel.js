@@ -1,14 +1,17 @@
 class Tunnel extends Object{
-	constructor(x, y, dir, toughness){
+	constructor(x, y, dir, floor, toughness){
 		super(x, y, 0, settings.floor_size);
 		this.direction = dir;
+		this.floor = floor;
 		this.length = 0;
 		this.max_health = settings.tunnel_chunk_size * this.size.y;
 		this.toughness = toughness;
 		this.health = this.max_health;
 		this.color = "gray";
 		this.content = new TunnelContent();
-		this._makeDisplay();
+		if (this.floor != 0){
+			this._makeDisplay();
+		}
 	}
 	
 	_makeDisplay(){

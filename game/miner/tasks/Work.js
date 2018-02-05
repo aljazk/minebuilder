@@ -15,30 +15,31 @@ class Work extends Task{
 			//walk to the end of the tunnel if work just started or if tunnel expended
 			if (miner.position.x != pos && !miner.sack.full()){
 				miner.tasks.force(new Walk(miner, pos, "Walk to the end of tunnel"));
+				return t;
 			} else {
 				var dig = t * miner.power / tunnel.toughness;
-				//fills the sack and return the value that couldnt fit in (0 if not filled)
-				var left = miner.sack.fill(dig);
-				var extentions = tunnel.dig(dig-left);
 				//generate random ore
-				progress += dig-left;
-				if(progress > goal-0.0001) progress = goal; //fix rounding error
-				if(progress >= last_gen + 1){
-					var p = Math.floor(progress) - last_gen;
-					last_gen = Math.floor(progress);
+				progress += dig;
+				var p = 0;
+				if(progress >= last_gen){
+					var floor_p = Math.floor(progress);
+					p = floor_p - last_gen;
+					last_gen = floor_p;
 					var ore = tunnel.content.makeOre(p);
-					miner.sack.ore.transfer(p, ore);
+					var ret = miner.sack.content.transfer(p, ore);
+					tunnel.dig(p - ret);
+					p -= ret;
 				}
 			}
-			return left / miner.power * tunnel.toughness;
+			var diff = dig - p;
+			if (diff < 0){
+				return 0
+			} else {
+				return diff / miner.power * tunnel.toughness;
+			}
 		}
 		
 		var cond = function(){
-			if(miner.sack.full()){
-				if(progress !=  goal){
-					console.log("Error in Work.js, Sack was not filled: ", progress, last_gen, miner.sack.ore.getSum());
-				}
-			}
 			return miner.sack.full();
 		}
 		

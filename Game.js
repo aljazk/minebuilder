@@ -65,6 +65,7 @@ class Game{
 		document.removeEventListener("keyup", this.pause_bind, false);
 		this.pause_menu.hide();
 		this.game_over.hide();
+		
 		game.menu.display();
 	}
 	

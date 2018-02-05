@@ -4,6 +4,9 @@ class Floors {
 		this.ground_pos = y;
 		this.center = x;
 		this.add(); //add floor 0 (surface)
+		delete this.floors[0].tunnel; //there are not tunnel at surface
+		var t = this;
+		window.getFloorList = function(){return t.floors};
 	}
 	
 	add(){
@@ -38,13 +41,15 @@ class Floor extends Object{
 		super(x, y, 0.5, settings.floor_size);
 		this.number = n;
 		this.tunnel = {};
-		this.tunnel.left = new Tunnel(x, y, "left", this.number);
-		this.tunnel.right = new Tunnel(x, y, "right", this.number);
+		this.tunnel.left = new Tunnel(x, y, "left", this.number, this.number);
+		this.tunnel.right = new Tunnel(x, y, "right", this.number, this.number);
 	}
 	
 	draw(c){
 		super.draw(c);
-		this.tunnel.left.draw(c);
-		this.tunnel.right.draw(c);
+		if(this.tunnel != null){
+			this.tunnel.left.draw(c);
+			this.tunnel.right.draw(c);
+		}
 	}
 }

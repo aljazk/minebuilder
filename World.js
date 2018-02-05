@@ -1,5 +1,8 @@
 class World{
 	constructor(){
+		this.gui = new GUI();
+		window.camera_position(500,100);
+		window.gui = this.gui;
 		this.last_frame = 0;
 		this.removeDisplays();
 		this.mine = new Mine();

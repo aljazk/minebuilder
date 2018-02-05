@@ -16,8 +16,19 @@ class Canvas {
 			sy = x.size.y;
 			x = x.position.x;
 		}
-		//check if object will be seen
+		//add: check if object will be seen
 		this.ctx.fillRect(x + Math.round(this.camera.x), y + Math.round(this.camera.y), sx * this.camera.zoom, sy * this.camera.zoom);
+	}
+	
+	strokeRect(x, y, sx, sy){
+		if (x instanceof Object){
+			y = x.position.y;
+			sx = x.size.x;
+			sy = x.size.y;
+			x = x.position.x;
+		}
+		//add: check if object will be seen
+		this.ctx.strokeRect(x + Math.round(this.camera.x), y + Math.round(this.camera.y), sx * this.camera.zoom, sy * this.camera.zoom);
 	}
 	
 	
