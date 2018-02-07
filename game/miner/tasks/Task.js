@@ -13,6 +13,7 @@ class Tasks{
 		if (this.list[0] != null){
 			return this.list[0].name;
 		}
+		return "Waiting";
 	}
 	
 	_updateInfoList(){

@@ -18,12 +18,29 @@ class InfoList{
 	static updateTr(tr, arr){
 		var td = tr.getElementsByTagName("td");
 		for(var i=0; i<arr.length; i++){
-			if(td[i].innerHTML != arr[i] && td[i].innerHTML != arr[i].outerHTML ){
-				td[i].innerHTML = "";
-				td[i].append(arr[i]);
+			if (td[i] == undefined){
+				var n = document.createElement("td");
+				n.append(arr[i]);
+				tr.appendChild(n);
+			} else {
+				if(td[i].innerHTML != arr[i] && td[i].innerHTML != arr[i].outerHTML ){
+					td[i].innerHTML = "";
+					td[i].append(arr[i]);
+				}
 			}
 		}
 		return tr;
+	}
+	
+	static updateAtributes(list){
+		var tr = document.getElementById("info_tr_undefined");
+		if(tr == null){
+			tr = InfoList.makeTr(list, undefined);
+			tr.classList.add("info_list_tr");
+			table.appendChild(tr);
+		} else {
+			tr = InfoList.updateTr(tr, list);
+		}
 	}
 	
 	static update(list){
@@ -72,7 +89,7 @@ class InfoList{
 		for(var i=0; i<list.length; i++){
 			var o = list[i];
 			if(i == 0){
-				table.appendChild(InfoList.makeTr(o.constructor.getInfoAtributes(div.name)));
+				table.appendChild(InfoList.makeTr(o.getInfoAtributes(div.name)));
 			}
 			//get the info of the object
 			var tr = InfoList.makeTr(o.getInfo(div.name), i);

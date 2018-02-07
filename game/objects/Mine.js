@@ -31,6 +31,7 @@ class Mine extends Object{
 		
 		//create storage
 		this.storage = new Storage(480, this.position.y);
+		this.storage.content.add(1,10);
 		this.buildings.add(this.storage);
 		for(var i = 0; i<10; i++){
 			this.buildings.add(new Storage(600+i*20, this.position.y));
@@ -45,6 +46,8 @@ class Mine extends Object{
 		this.miners.setElevator(this.elevator);
 		this.miners.setFloors(this.floors);
 		
+		
+		var market = new Market("Main");
 		
 		/*
 		this.miners.add();
@@ -76,6 +79,12 @@ class Mine extends Object{
 		window.allDrop = function(ore){
 			for(var i = 0; i<t.miners.getCount(); i++){
 				t.miners.miners[i].drop(ore);
+			}
+		}
+		
+		window.allDropOnTrain = function(ore){
+			for(var i = 0; i<t.miners.getCount(); i++){
+				t.miners.miners[i].dropOnTrain(ore);
 			}
 		}
 		

@@ -7,12 +7,11 @@ class Storage extends Building{
 		this.upgrade = new UpgradeStorage();
 	}
 	
-	static getInfoAtributes(){
+	getInfoAtributes(){
 		var info = super.getInfoAtributes();
 		info.push("Stored");
 		var ol = new OreList().get();
 		for(var i=0; i<ol.length; i++){
-			console.log(ol[i].name);
 			info.push(ol[i].name);
 		}
 		info.push("Capacity");

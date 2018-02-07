@@ -3,11 +3,9 @@ class Wagon extends Building{
 		super(0, 0, sx, sy);
 		this.color = "orange";
 		this.weight = sx*sy;
-		this.storage = this.size.x*this.size.y;
-		this.stored = 0;
-		this.drop_speed = 0.1;
-		this.ore = new StorageContent();
+		this.content = new StorageContent(this.size.x*this.size.y);
 		this._makeDisplay();
+		this.ore_array = [];
 	}
 	
 	static getInfoAtributes(){
@@ -17,9 +15,18 @@ class Wagon extends Building{
 	
 	getInfo(){
 		var info = super.getInfo();
-		info.push(Math.round(this.stored));
-		info.push(this.storage);
+		info.push(this.content.stored);
+		//console.log(this.ore_array);
+		for(var i=0; i<this.ore_array.length; i++){
+			var name = this.ore_array[i];
+			info.push(this.content.getOreCount(name));
+		}
+		info.push(this.content.max_storage);
 		return info;
+	}
+	
+	updateOreArray(oa){
+		this.ore_array = oa;
 	}
 	
 	setId(id){
@@ -28,5 +35,12 @@ class Wagon extends Building{
 	
 	draw(c){
 		super.draw(c);
+		c.ctx.fillStyle = "rgb(139,69,19)";
+		var pile_size = this.size.y * this.content.stored/this.content.max_storage;
+		c.drawRect(this.position.x, this.position.y + this.size.y - pile_size, this.size.x, pile_size);
+		//update storage content display
+		if (this.stored_p != null){
+			this.stored_p.innerHTML = this.content.getString();
+		}
 	}
 }

@@ -16,11 +16,12 @@ class Miner extends Object{
 		this.power = settings.miner.power;
 	}
 	
-	static getInfoAtributes(name){
+	getInfoAtributes(name){
 		var info = super.getInfoAtributes();
 		if (name == "Sack"){
 			info.push("Carrying");
 			info.push("Max Storage");
+			info.push("");
 			info.push("");
 			info.push("");
 		} else if (name == "Work"){
@@ -38,8 +39,9 @@ class Miner extends Object{
 			this.stored_p.innerHTML = this.sack.content.stored;
 			info.push(this.stored_p);
 			info.push(this.sack.content.max_storage);
-			info.push(new DropForm(this.drop.bind(this)).get());
 			info.push(new PickForm(this.pick.bind(this)).get());
+			info.push(new DropForm(this.drop.bind(this)).get());
+			info.push(new DropOnTrainForm(this.dropOnTrain.bind(this)).get());
 		} else if (name == "Work"){
 			info.push(this.tasks.getCurrentTaskName());
 			
@@ -172,8 +174,12 @@ class Miner extends Object{
 		}
 	}
 	
-	dropOnTrain(ore){
-		
+	dropOnTrain(ore, importance_type){
+		if (importance_type == "force"){
+			this.tasks.force(new DropOnTrain(this, ore));
+		} else {
+			this.tasks.add(new DropOnTrain(this, ore));
+		}
 	}
 	
 	move(timestamp){

@@ -9,7 +9,7 @@ class Tunnel extends Object{
 		this.health = this.max_health;
 		this.color = "gray";
 		this.content = new TunnelContent();
-		if (this.floor != 0){
+		if (this.floor != 0){ //dont make display for surface
 			this._makeDisplay();
 		}
 	}

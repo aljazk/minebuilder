@@ -63,7 +63,7 @@ class Drop extends Task{
 				var oc = miner.sack.getOreCount(ore);
 				if (storage != null && storage.full() && oc > 0){
 					console.log("Still need to drop "+oc+" of "+ore);
-					miner.drop(ore);
+					miner.drop(ore, "force");
 					return true;
 				}
 				if (oc == 0 || oc == null){

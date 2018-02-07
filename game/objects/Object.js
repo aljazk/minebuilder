@@ -8,7 +8,7 @@ class Object{
 		//add: needs a nice naming and id system
 	}
 	
-	static getInfoAtributes(){
+	getInfoAtributes(){
 		var info = [];
 		info.push("Name");
 		info.push("Id");

@@ -26,7 +26,7 @@ class Wagons {
 	getStoredSum(){
 		var stored = 0
 		for(var i=0; i<this.list.length; i++){
-			stored += this.list[i].stored;
+			stored += this.list[i].content.stored;
 		}
 		return stored;
 	}
@@ -34,13 +34,31 @@ class Wagons {
 	getCapacitySum(){
 		var storage = 0
 		for(var i=0; i<this.list.length; i++){
-			storage += this.list[i].storage;
+			storage += this.list[i].content.max_storage;
 		}
 		return storage;
 	}
 	
-	getEmptyWagon(){ //return first wagon with some space left
-		//add: make wagons a containers
+	getSum(){
+		var sum = new StorageContent(this.getCapacitySum());
+		for(var i=0; i<this.list.length; i++){
+			var w = this.list[i].content;
+			for(var j=0; j<w.content.length; j++){
+				var o = w.content[j].quantity;
+				sum.add(j, o);
+			}
+		}
+		return sum;
+	}
+	
+	getFirstEmpty(){ //return first wagon with some space left
+		for(var i=0; i<this.list.length; i++){
+			var w = this.list[i];
+			if (w.content.spaceLeft() > 0){
+				return w;
+			}
+		}
+		return null;
 	}
 	
 	getWagonPosition(n){
@@ -53,6 +71,14 @@ class Wagons {
 	
 	getWagon(n){
 		return this.list[n];
+	}
+	
+	updateOreArray(){
+		var sum = this.getSum();
+		var ore_array = sum.getOreArray();
+		for(var i=0; i<this.list.length; i++){
+			this.list[i].updateOreArray(ore_array);
+		}
 	}
 	
 	move(pos){

@@ -4,11 +4,28 @@ class TrainStation extends Building{
 		this.color = "transparent";
 	}
 	
-	static getInfoAtributes(){
+	getInfoAtributes(){
 		var info = super.getInfoAtributes();
-		info.push("Stored");
-		info.push("Capacity");
 		return info;
+	}
+	
+	getInfo(){
+		var info = super.getInfo();
+		info.push("Sell crap");
+		info.push("Dump crap");
+		return info;
+	}
+	
+	_getInfoListArray(name){
+		var array = [];
+		if (name == "train"){
+			array.push(this.train);
+			//array.push(this.train.getDetails());
+			array = array.concat(this.train.wagons.list);
+		} else if (name == "train_station"){
+			array.push(this);
+		}
+		return array;
 	}
 	
 	build(){
@@ -18,19 +35,27 @@ class TrainStation extends Building{
 		var button = document.getElementById("button_TrainStations");
 		guib.remove(button);
 		var t = this;
+		button = GUI.makeButton("Train", function(){
+			InfoList.make("Train", t._getInfoListArray("train"));
+		});
+		guib.shift(button);
 		button = GUI.makeButton("Train station", function(){
-			InfoList.make("Train station", t._getInfoListArray());
+			InfoList.make("Train station", t._getInfoListArray("train_station"));
 		});
 		guib.shift(button);
 	}
 	
-	_getInfoListArray(){
-		var array = [];
-		array.push(this);
-		array.push(this.train);
-		array.push(this.train.getDetails());
-		array = array.concat(this.train.wagons.list);
-		return array;
+	getLoadingWagon(){
+		if (this.train != null){
+			return this.train.getLoadingWagon();
+		} else {
+			return "no train";
+		}
+		return null;
+	}
+	
+	getClosestEdge(){
+		return this.getCenter().x;
 	}
 	
 	setId(id){
@@ -43,8 +68,15 @@ class TrainStation extends Building{
 	
 	move(timestamp){
 		this.train.move(timestamp)
-		if (InfoList.name == "Train station"){
-			InfoList.update(this._getInfoListArray());
+		var div = document.getElementById("info_list");
+		if (div != null){
+			if (div.name == "Train"){
+				InfoList.updateAtributes(this.train.getInfoAtributes());
+				this.train.wagons.updateOreArray();
+				InfoList.update(this._getInfoListArray("train"));
+			} else if (div.name == "Train station"){
+				InfoList.update(this._getInfoListArray("train_sation"));
+			}
 		}
 	}
 	

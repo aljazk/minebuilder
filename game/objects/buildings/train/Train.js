@@ -4,6 +4,7 @@ class Train extends Building{
 		this.color = "gray";
 		this.train_station = station;
 		this.wagons = new Wagons(x, y);
+		this.loading_wagon = null;
 		this.addWagon(new Wagon(30,15));
 		this.addWagon(new Wagon(30,15));
 		this.addWagon(new Wagon(30,15));
@@ -22,15 +23,21 @@ class Train extends Building{
 		window.stopAt = this.positionAtWagon.bind(this);
 	}
 	
-	static getInfoAtributes(){
+	getInfoAtributes(){
 		var info = super.getInfoAtributes();
+		info.push("Stored");
+		var sum = this.wagons.getSum();
+		info = info.concat(sum.getOreArray());
+		info.push("Capacity");
 		return info;
 	}
 	
 	getInfo(){
 		var info = super.getInfo();
-		info.push(this.wagons.getStoredSum());
-		info.push(this.wagons.getCapacitySum());
+		var sum = this.wagons.getSum();
+		info.push(sum.stored);
+		info = info.concat(sum.getQuantityArray());
+		info.push(sum.max_storage);
 		return info;
 	}
 	
@@ -64,12 +71,19 @@ class Train extends Building{
 	upgrade(){
 	}
 	
-	positionAtWagon(n){ //n is a wagon from 1 to n, 1 being the closest to train
+	positionAtWagon(n){ //n is a wagon or number from 1 to n, 1 being the closest to train
+		if (n == null){
+			return false;
+		}
 		var station_center = this.train_station.position.x + this.train_station.size.x/2;
 		var pos = station_center - this.size.x/2;
-		if (n != undefined && n > 0){
-			n--;
-			var wagon = this.wagons.list[n];
+		if (n != undefined){
+			var wagon = n;
+			if (typeof(n) == "number"){
+				var wagon = this.wagons.list[n-1];
+			} else {
+				n = this.wagons.list.indexOf(wagon);
+			}
 			if (wagon != undefined){
 				var diff = this.position.x - wagon.position.x;
 				var pos = station_center - wagon.size.x/2 + diff;
@@ -82,6 +96,20 @@ class Train extends Building{
 		this.stopping_message = "Wagon "+ (n+1) +" in position for loading.";
 		this.drive = true;
 		return true;
+	}
+	
+	_positionWagon(){
+		if (this.loading_wagon == null || this.loading_wagon.content.isFull()){
+			this.loading_wagon = this.wagons.getFirstEmpty();
+			this.positionAtWagon(this.loading_wagon);
+		}
+	}
+	
+	getLoadingWagon(){
+		if (this.speed == 0){
+			return this.loading_wagon;
+		}
+		return "driving";
 	}
 	
 	teleport(pos){
@@ -123,6 +151,7 @@ class Train extends Building{
 	_stopAtStation(){
 		this.stopAt = this.train_station.position.x + this.train_station.size.x/2 - this.size.x/2;
 		this.stopping_message = "Train stopped at station.";
+		this.loading_wagon = null;
 	}
 	
 	move(timestamp){
@@ -138,6 +167,7 @@ class Train extends Building{
 			this.teleport(settings.left_limit);
 		}
 		this._stopAt(this.stopAt);
+		this._positionWagon();
 	}
 	
 	draw(c){

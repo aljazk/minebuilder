@@ -55,7 +55,7 @@ class Pick extends Task{
 		var cond = function(){
 			if (done && !miner.sack.full()){
 				console.log(miner.name+" "+miner.id+" still need to pick: "+miner.sack.spaceLeft() +", restarting pick task.");
-				miner.pick(ore);
+				miner.pick(ore, "force");
 				return true;
 			}
 			return miner.sack.full() || no_ore;
